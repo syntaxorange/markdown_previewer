@@ -12,37 +12,89 @@
   <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
   <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.2.3/marked.min.js"></script>
 </head>
 <body>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-xs-offset-3 col-xs-6">
-        <div class="panel panel-success" id="panel-editor">
-          <div class="panel-heading">
-            <h3 class="panel-title"><i class="fab fa-free-code-camp"></i> <span>Editor</span></h3>
-            <i class="fas fa-arrows-alt"></i>
-          </div>
-          <div class="panel-body">
-            <textarea id="editor"></textarea>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-xs-offset-2 col-xs-8">
-        <div class="panel panel-success" id="panel-preview">
-          <div class="panel-heading">
-            <h3 class="panel-title"><i class="fab fa-free-code-camp"></i> <span>Previewer</span></h3>
-            <i class="fas fa-arrows-alt"></i>
-          </div>
-          <div class="panel-body" id="preview">
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div class="container-fluid" id="root"></div>
   
   <script type="text/babel">
+    marked.setOptions({
+      breaks: true
+    });
+
+    class RenderEditor extends React.Component {
+      constructor(props) {
+        super(props);
+      }
+
+      render() {
+        return (
+          <div className="col-xs-offset-3 col-xs-6">
+            <div className="panel panel-success" id="panel-editor">
+              <div className="panel-heading">
+                <h3 className="panel-title"><i className="fab fa-free-code-camp"></i> <span>Editor</span></h3>
+                <i className="fas fa-arrows-alt"></i>
+              </div>
+              <div className="panel-body">
+                <textarea id="editor" onChange={this.props.handleChange} value={this.props.text}></textarea>
+              </div>
+            </div>
+          </div>
+        );
+      }
+    }
+
+    class RenderPreviewer extends React.Component {
+      constructor(props) {
+        super(props);
+      }
+
+      render() {
+        return (
+          <div className="col-xs-offset-2 col-xs-8">
+            <div className="panel panel-success" id="panel-preview">
+              <div className="panel-heading">
+                <h3 className="panel-title"><i className="fab fa-free-code-camp"></i> <span>Previewer</span></h3>
+                <i className="fas fa-arrows-alt"></i>
+              </div>
+              <div className="panel-body" id="preview" dangerouslySetInnerHTML={{ __html: this.props.markup }}></div>
+            </div>
+          </div>
+        );
+      }
+    }
+    
+    class App extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          text: '# Welcome to my React Markdown Previewer!\n\n## This is a sub-heading...\n### And here\'s some other cool stuff:\n\nHeres some code, \`<div></div>\`, between 2 backticks.\n\n\`\`\`\n\/\/ this is multi line code:\n\nfunction anotherExample(firstLine, lastLine) {\n if (firstLine == \'\`\`\`\' \&\& lastLine == \'\`\`\`\') {\n  return multiLineCode;\n }\n}\n\`\`\`\nYou cand also make text **bold**... whoa!\nOr _italic_.\nOr... wait for it.. **_both!_**\nAnd feel free to go crazy ~~crossing stuff out~~.\n\nThere\'s also [links](https://www.freecodecamp.org), and\n> Block Quotes!\n\nAnd if you want to get really crazy, even tables:\n\nWild Header | Crazy Header | Another Header?\n------------ | ------------- | -------------\nYour content can | be here, and it | can be here....\nAnd here. | Okay. | I think we get it.\n- And of course there are lists.\n  - Some are bulleted.\n    - With different indentation levels.\n      - That look like this.\n1. And there are numbered lists too.\n1. Use just 1s if you want!\n1. And last but not least, let\'s not forget embedded images:\n\n![freeCodeCamp Logo](https://cdn.freecodecamp.org/testable-projects-fcc/images/fcc_secondary.svg)',
+        }
+        this.handleChange = this.handleChange.bind(this);
+      }
+
+      handleChange(event) {
+        this.setState({
+          text: event.target.value
+        });
+      }
+
+      render() {
+        return (
+          <div>
+            <div className="row">
+              <RenderEditor handleChange={this.handleChange} text={this.state.text} />
+            </div>
+            <div className="row">
+              <RenderPreviewer markup={marked.parse(this.state.text)} />
+            </div>
+          </div>
+        );
+      }
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
   </script>
 </body>
 </html>
