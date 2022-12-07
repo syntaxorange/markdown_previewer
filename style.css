@@ -89,6 +89,7 @@ textarea:focus {
   margin-right: 5px;
 }
 
+.fa-compress-arrows-alt,
 .fa-arrows-alt {
   display: block;
   font-size: 20px;
@@ -96,6 +97,12 @@ textarea:focus {
   transform: rotate(45deg);
 }
 
+.fa-compress-arrows-alt {
+  font-size: 17px;
+  transform: rotate(0);
+}
+
+.fa-compress-arrows-alt:hover,
 .fa-arrows-alt:hover {
   color: #57e2b1;
 }
